@@ -1,5 +1,4 @@
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -74,14 +73,6 @@ public class GraphComparer {
             final String[] rowContents = SCANNER.nextLine().split("\\s+");
             if (rowContents.length != size.getCols()) {
                 throw new IllegalArgumentException("Invalid graph width at row " + row);
-            }
-
-            for (String colValue : rowContents) {
-                try {
-                    Integer.parseInt(colValue);
-                } catch (NumberFormatException ex) {
-                    throw new IllegalArgumentException("Invalid graph data at row " + row);
-                }
             }
 
             graphContents[row] = rowContents;
