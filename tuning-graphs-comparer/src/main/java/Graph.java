@@ -21,7 +21,7 @@ public class Graph {
 
             for (int col = 0; col < this.graphSize.getCols(); col++) {
                 if (!thisRow[col].equals(otherRow[col])) {
-                    diff[row][col] = thisRow[col] + " => " + otherRow[col];
+                    diff[row][col] = thisRow[col] + "/" + otherRow[col];
                 } else {
                     diff[row][col] = "eq";
                 }
