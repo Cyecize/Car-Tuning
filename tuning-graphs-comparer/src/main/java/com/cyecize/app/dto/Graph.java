@@ -1,3 +1,5 @@
+package com.cyecize.app.dto;
+
 public class Graph {
     private final String[][] contents;
     private final GraphSize graphSize;
@@ -9,7 +11,7 @@ public class Graph {
         this.graphName = graphName;
     }
 
-    public Graph createDiffGraph(Graph graph) {
+    public Graph createDiffGraph(Graph graph, boolean includeDiffValues) {
         if (!this.graphSize.equals(graph.graphSize)) {
             throw new IllegalArgumentException("Trying to compare two different graphs.");
         }
@@ -21,7 +23,11 @@ public class Graph {
 
             for (int col = 0; col < this.graphSize.getCols(); col++) {
                 if (!thisRow[col].equals(otherRow[col])) {
-                    diff[row][col] = thisRow[col] + "/" + otherRow[col];
+                    if (includeDiffValues) {
+                        diff[row][col] = thisRow[col] + "/" + otherRow[col];
+                    } else {
+                        diff[row][col] = "not eq";
+                    }
                 } else {
                     diff[row][col] = "eq";
                 }

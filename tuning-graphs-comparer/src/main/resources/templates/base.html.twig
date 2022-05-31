@@ -4,7 +4,7 @@
 <head>
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/webapp/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/main.css">
 
     {% block stylesheets %} {% endblock %}
 
@@ -16,6 +16,9 @@
 {% embed 'layout/header.twig' %} {% endembed %}
 
 <div class="container" style="max-width: 1400px;">
+    {% if request.getQueryParam('msg') %}
+        <h1 class="alert alert-info">{{ request.getQueryParam('msg') }}</h1>
+    {% endif %}
     {% block body %} {% endblock %}
 </div>
 

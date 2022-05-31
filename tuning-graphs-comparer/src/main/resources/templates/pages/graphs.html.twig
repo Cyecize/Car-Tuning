@@ -1,0 +1,166 @@
+{% extends '../base.html.twig' %}
+
+{% block body %}
+    <div class="mt-2">
+        <h2>New Diff File</h2>
+
+        <div>
+            <form method="post">
+                <div class="form-group">
+                    <label for="fileName">File name</label>
+                    <input type="text"
+                           value="{{ model.fileName }}"
+                           class="form-control"
+                           id="fileName"
+                           name="fileName"
+                           placeholder="Valid windows file name">
+                    {% embed '../field-err.twig' with {'fieldName':'fileName'} %} {% endembed %}
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="graphWidth">Graph Width</label>
+                            <input type="number"
+                                   required
+                                   value="{{ model.graphWidth }}"
+                                   class="form-control"
+                                   id="graphWidth"
+                                   name="graphWidth"
+                                   aria-describedby="graphWidthHelp">
+                            <small id="graphWidthHelp" class="form-text text-muted">
+                                Automatically populated once you paste the graph.
+                            </small>
+                            {% embed '../field-err.twig' with {'fieldName':'graphWidth'} %} {% endembed %}
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="graphHeight">Graph Height</label>
+                            <input type="number"
+                                   required
+                                   value="{{ model.graphHeight }}"
+                                   class="form-control"
+                                   id="graphHeight"
+                                   name="graphHeight"
+                                   aria-describedby="graphHeightHelp">
+                            <small id="graphHeightHelp" class="form-text text-muted">
+                                Automatically populated once you paste the graph.
+                            </small>
+                            {% embed '../field-err.twig' with {'fieldName':'graphHeight'} %} {% endembed %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-check">
+                    {% set checkedValue = 'checked' %}
+                    {% if model.includeDiffValues is not null %}
+                        {% if model.includeDiffValues == false %}
+                            {% set checkedValue = '' %}
+                        {% endif %}
+                    {% endif %}
+                    <input type="checkbox" {{ checkedValue }}
+                           class="form-check-input" name="includeDiffValues" id="includeDiffValues">
+                    <label class="form-check-label" for="includeDiffValues">Include values in diff graph</label>
+                    {% embed '../field-err.twig' with {'fieldName':'includeDiffValues'} %} {% endembed %}
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                    <label for="graph1">First graph</label>
+                    <textarea
+                            id="graph1"
+                            name="graph1"
+                            required
+                            class="form-control graph-textarea"
+                            placeholder="Paste copied value from ECU Flash">{{ model.graph1 }}</textarea>
+                    {% embed '../field-err.twig' with {'fieldName':'graph1'} %} {% endembed %}
+                </div>
+
+                <div class="form-group">
+                    <label for="graph1Name">First Graph name</label>
+                    <input type="text"
+                           class="form-control"
+                           id="graph1Name"
+                           value="{{ model.graph1Name }}"
+                           name="graph1Name"
+                           placeholder="Optional">
+                    {% embed '../field-err.twig' with {'fieldName':'graph1Name'} %} {% endembed %}
+                </div>
+
+                <div class="form-group">
+                    <label for="graph2">Second graph</label>
+                    <textarea
+                            id="graph2"
+                            name="graph2"
+                            required
+                            class="form-control graph-textarea"
+                            placeholder="Paste copied value from ECU Flash">{{ model.graph2 }}</textarea>
+                    {% embed '../field-err.twig' with {'fieldName':'graph2'} %} {% endembed %}
+                </div>
+
+                <div class="form-group">
+                    <label for="graph2Name">Second Graph name</label>
+                    <input type="text"
+                           class="form-control"
+                           id="graph2Name"
+                           value="{{ model.graph2Name }}"
+                           name="graph2Name"
+                           placeholder="Optional">
+                    {% embed '../field-err.twig' with {'fieldName':'graph2Name'} %} {% endembed %}
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="horizontalHeader">Horizontal header</label>
+                            <input type="text"
+                                   name="horizontalHeader"
+                                   class="form-control"
+                                   value="{{ model.horizontalHeader }}"
+                                   id="horizontalHeader"
+                                   placeholder="Optional">
+                            {% embed '../field-err.twig' with {'fieldName':'horizontalHeader'} %} {% endembed %}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="verticalHeader">Vertial header</label>
+                            <input type="text"
+                                   name="verticalHeader"
+                                   class="form-control"
+                                   value="{{ model.verticalHeader }}"
+                                   id="verticalHeader"
+                                   placeholder="Optional">
+                            {% embed '../field-err.twig' with {'fieldName':'verticalHeader'} %} {% endembed %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group p-1">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function () {
+            const graph1 = document.getElementById('graph1');
+            const widthField = document.getElementById('graphWidth');
+            const heightField = document.getElementById('graphHeight');
+
+            //Extract graph size
+            graph1.onchange = ev => {
+                const value = graph1.value;
+                if (!value) return;
+                heightField.value = value.split('\n').length;
+                widthField.value = value.split('\n')[0].split(/\s+/).length;
+            };
+        });
+    </script>
+{% endblock %}

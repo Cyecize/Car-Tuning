@@ -1,3 +1,5 @@
+package com.cyecize.app.dto;
+
 import java.util.Objects;
 
 public class GraphSize {
