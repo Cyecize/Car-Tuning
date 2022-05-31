@@ -1,8 +1,9 @@
 package com.cyecize.app.service;
 
 import com.cyecize.app.dto.CreateDiffDto;
+import org.apache.poi.ss.usermodel.Workbook;
 
 public interface GraphDiffService {
 
-    String generateDiffFile(CreateDiffDto dto);
+    Workbook generateDiffFile(CreateDiffDto dto);
 }

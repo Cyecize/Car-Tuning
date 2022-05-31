@@ -4,39 +4,19 @@ import com.cyecize.app.dto.CreateDiffDto;
 import com.cyecize.app.dto.Graph;
 import com.cyecize.app.dto.GraphSize;
 import com.cyecize.ioc.annotations.Service;
-import com.cyecize.solet.SoletConfig;
-import com.cyecize.solet.SoletConstants;
-import com.cyecize.summer.common.annotations.Configuration;
-import com.cyecize.summer.utils.PathUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class GraphDiffServiceImpl implements GraphDiffService {
-    private final SoletConfig soletConfig;
-
-    private final String uploadedFilesLocation;
-
-    public GraphDiffServiceImpl(SoletConfig soletConfig,
-                                @Configuration("uploaded.files.location") String uploadedFilesLocation) {
-        this.soletConfig = soletConfig;
-        this.uploadedFilesLocation = uploadedFilesLocation;
-    }
-
     @Override
-    public String generateDiffFile(CreateDiffDto dto) {
+    public Workbook generateDiffFile(CreateDiffDto dto) {
         final GraphSize graphSize = new GraphSize(dto.getGraphWidth(), dto.getGraphHeight());
 
         final Graph graph1 = this.readGraph(graphSize, "First graph " + dto.getGraph1Name(), dto.getGraph1());
@@ -44,32 +24,11 @@ public class GraphDiffServiceImpl implements GraphDiffService {
 
         final Graph diffGraph = graph1.createDiffGraph(graph2, dto.getIncludeDiffValues());
 
-        final Workbook workbook = this.createSpreadsheet(
+        return this.createSpreadsheet(
                 List.of(graph1, graph2, diffGraph),
                 Objects.requireNonNullElse(dto.getVerticalHeader(), "").split("\\s+"),
                 Objects.requireNonNullElse(dto.getHorizontalHeader(), "").split("\\s+")
         );
-
-        try (workbook) {
-            final String fileName = String.format("%s_%s.xlsx",
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh_mm_ss")),
-                    Objects.requireNonNullElse(dto.getFileName(), "_graph_diff_results")
-            );
-
-            final String filePath = PathUtils.appendPath(this.uploadedFilesLocation, fileName);
-            final File physicalFile = new File(PathUtils.appendPath(this.getAssetsDir(), filePath));
-
-            physicalFile.getParentFile().mkdirs();
-            physicalFile.createNewFile();
-            try (OutputStream stream = new FileOutputStream(physicalFile)) {
-                workbook.write(stream);
-            }
-
-            return fileName;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return "error " + ex.getMessage();
-        }
     }
 
     private Graph readGraph(GraphSize size, String graphName, String graphValue) {
@@ -136,9 +95,5 @@ public class GraphDiffServiceImpl implements GraphDiffService {
         }
 
         return workbook;
-    }
-
-    private String getAssetsDir() {
-        return this.soletConfig.getAttribute(SoletConstants.SOLET_CONFIG_ASSETS_DIR).toString();
     }
 }
