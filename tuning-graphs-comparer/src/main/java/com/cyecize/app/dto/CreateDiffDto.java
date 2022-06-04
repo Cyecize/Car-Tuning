@@ -8,7 +8,7 @@ import com.cyecize.summer.areas.validation.constraints.NotNull;
 
 public class CreateDiffDto {
 
-    @MaxLength(length = 10)
+    @MaxLength(length = 50)
     private String fileName;
 
     @NotNull
