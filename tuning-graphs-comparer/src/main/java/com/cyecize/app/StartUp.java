@@ -1,3 +1,5 @@
+package com.cyecize.app;
+
 import com.cyecize.javache.embedded.JavacheEmbedded;
 import com.cyecize.summer.DispatcherSolet;
 
